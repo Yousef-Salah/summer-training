@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'title',
-        'user_id'
+        "title",
+        "author_id",
+        "number_of_pages", 
+        "release_date",
     ];
 
     public function author(): BelongsTo
