@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="navbar navbar-dark bg-dark box-shadow" style="background-color: {{ session()->get('navbar-background-color') ?? 'white' }} !important;">
             <div class="container d-flex justify-content-between">
                 <a href="#" class="navbar-brand d-flex align-items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
@@ -122,8 +122,8 @@
                                     <p class="card-text">{{ $hotel->name }}</p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="btn-group">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-secondary">View</button>
+                                            <a href="{{ route('hotels.show', $hotel->id) }}"
+                                                class="btn btn-sm btn-outline-secondary">View</a>
                                             <button type="button"
                                                 class="btn btn-sm btn-outline-secondary">Edit</button>
                                         </div>
@@ -152,8 +152,51 @@
             <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a
                     href="../../getting-started/">getting started guide</a>.</p>
         </div>
+
+        <div class="container text-center">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start mb-2 mb-md-0">
+                    <span>© 2025 Your Website</span>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <form action="{{ route('navbar.set-background') }}" method="POST" id="backgroundForm">
+                        @csrf
+                        <input type="hidden" name="color" id="backgroundInput">
+
+                        <div class="dropdown">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select Background Color
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" data-color="white">White</a></li>
+                                <li><a class="dropdown-item" href="#" data-color="black">Dark</a></li>
+                                <li><a class="dropdown-item" href="#" data-color="red">Red</a></li>
+                                <li><a class="dropdown-item" href="#" data-color="yellow">Yellow</a></li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                let color = this.getAttribute('data-color');
+
+                // put the color into hidden input
+                document.getElementById('backgroundInput').value = color;
+
+                // submit the form
+                document.getElementById('backgroundForm').submit();
+            });
+        });
+    </script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

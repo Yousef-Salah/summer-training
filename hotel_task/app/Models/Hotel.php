@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class Hotel extends Model
 {
@@ -17,6 +18,24 @@ class Hotel extends Model
         'rating',
         'image_path'  
     ];
+
+    protected static function booted(): void
+    {
+        // this runs automaticaaly on every update and save, so I deleted the cached value, then re save it again.
+        static::saving(function (Hotel $hotel) {
+            $cache_key = $hotel->getCacheKey();
+            Cache::forget($cache_key);
+
+            Cache::remember($cache_key, now()->addDay(), function() use ($hotel) {
+                return $hotel->load('rooms');
+            });
+        });
+
+        static::deleting(function (Hotel $hotel) {
+            $cache_key = $hotel->getCacheKey();
+            Cache::forget($cache_key);
+        });
+    }
 
     public function rooms(): HasMany
     {
@@ -42,6 +61,28 @@ class Hotel extends Model
                         $q->where('price', '<', $max_price);
                     });
                 });
+    }
+
+    /**
+     * customized moodel binding to cache all requested hotels for 1 day
+     * 
+     * @param int $value 
+     * @param string|null $field
+     * 
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $cache_key = 'hotel_' . $value;
+
+        return Cache::remember($cache_key, now()->addDay(), function() use ($value) {
+            return $this->with('rooms')->where('id', $value)->firstOrFail();
+        });
+    }
+
+    private function getCacheKey(): string
+    {
+        return 'hotel_' . $this->id;
     }
 
 }

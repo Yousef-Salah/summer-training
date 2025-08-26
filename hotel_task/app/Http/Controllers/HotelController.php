@@ -40,7 +40,7 @@ class HotelController extends Controller
         //     });
         // }
 
-        $query->filterByPriceRange($validated['min_price'], $validated['max_price']);
+        $query->filterByPriceRange($validated['min_price'] ?? null, $validated['max_price'] ?? null);
 
         $hotels = $query->withCount(['rooms'])->paginate(5);
 
