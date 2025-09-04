@@ -13,4 +13,3 @@ Route::get('/hotels/{hotel}/view', [HotelController::class, 'show'])->name('hote
 
 Route::post('/navbar/set-background', NavBarSetBackgroundColor::class)->name('navbar.set-background');
 
-require __DIR__ . '/api.php';

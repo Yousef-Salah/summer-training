@@ -10,13 +10,15 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        api: __DIR__.'/../routes/api.php',
+        apiPrefix: 'api',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api(prepend: CheckAccountVerification::class);
+        // $middleware->api(prepend: CheckAccountVerification::class);
 
-        $middleware->alias([
-            'verification.account' => CheckAccountVerification::class,
-        ]);
+        // $middleware->alias([
+        //     'verification.account' => CheckAccountVerification::class,
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
